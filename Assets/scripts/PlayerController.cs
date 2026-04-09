@@ -4,6 +4,13 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : Entity
 {
+    [Header("Боевая система")]
+    public float attackRange = 2.5f;     // Дальность удара
+    public float attackDamage = 35f;     // Урон (у курицы по умолчанию 100 ХП)
+    public float attackCooldown = 0.5f;  // Задержка между ударами (полсекунды)
+    public GameObject hitEffectPrefab;   // Ссылка на префаб взрыва искр
+
+    private float nextAttackTime = 0f;
     [Header("Настройки перемещения")]
     public float moveSpeed = 7f;
     public float turnSpeed = 720f;
@@ -51,6 +58,15 @@ public class PlayerController : Entity
 
         moveInput = new Vector3(inputVector.x, 0f, inputVector.y);
         moveInput.Normalize();
+
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            if (Time.time >= nextAttackTime)
+            {
+                PerformAttack();
+                nextAttackTime = Time.time + attackCooldown;
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -66,4 +82,42 @@ public class PlayerController : Entity
             rb.rotation = Quaternion.RotateTowards(rb.rotation, toRotation, turnSpeed * Time.fixedDeltaTime);
         }
     }
+    void PerformAttack()
+    {
+        // Создаем невидимую сферу вокруг игрока и собираем всё, что в неё попало
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackRange);
+        
+        bool hitSomeone = false;
+
+        foreach (var hitCollider in hitColliders)
+        {
+            // Проверяем, попали ли мы по врагу
+            EnemyBot enemy = hitCollider.GetComponent<EnemyBot>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(attackDamage);
+                
+                // Спавним крутой спецэффект прямо на враге (чуть выше земли, чтобы было видно)
+                if (hitEffectPrefab != null)
+                {
+                    Instantiate(hitEffectPrefab, hitCollider.transform.position + Vector3.up, Quaternion.identity);
+                }
+                
+                hitSomeone = true;
+            }
+        }
+
+        if (hitSomeone)
+        {
+            Debug.Log("Попал по курице! 💥");
+        }
+    }
+
+    // Эта штука нарисует красную сферу в редакторе Unity, чтобы ты мог визуально настроить радиус удара
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
+
 }

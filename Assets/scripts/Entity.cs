@@ -2,11 +2,14 @@ using UnityEngine;
 
 public class Entity : MonoBehaviour
 {
-    [Header("Базовые характеристики")]
+    [Header("Р‘Р°Р·РѕРІС‹Рµ С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё")]
     public float maxHealth = 100f;
 
-
     protected float currentHealth;
+
+    // Р”РћР‘РђР’Р›Р•РќРћ: РџСѓР±Р»РёС‡РЅС‹Рµ СЃРІРѕР№СЃС‚РІР° РґР»СЏ С‡С‚РµРЅРёСЏ Р·РґРѕСЂРѕРІСЊСЏ РёР· UI
+    public float CurrentHealth => currentHealth; 
+    public float MaxHealth => maxHealth;
 
     protected virtual void Start()
     {
@@ -16,7 +19,7 @@ public class Entity : MonoBehaviour
     public virtual void TakeDamage(float amount)
     {
         currentHealth -= amount;
-        Debug.Log($"{gameObject.name} получил {amount} урона. Текущее здоровье: {currentHealth}");
+        Debug.Log($"{gameObject.name} РїРѕР»СѓС‡РёР» {amount} СѓСЂРѕРЅР°. РўРµРєСѓС‰РµРµ Р·РґРѕСЂРѕРІСЊРµ: {currentHealth}");
 
         if (currentHealth <= 0)
         {
@@ -26,7 +29,7 @@ public class Entity : MonoBehaviour
 
     protected virtual void Die()
     {
-        Debug.Log($"{gameObject.name} уничтожен!");
+        Debug.Log($"{gameObject.name} СѓРЅРёС‡С‚РѕР¶РµРЅ!");
         Destroy(gameObject);
     }
 }
