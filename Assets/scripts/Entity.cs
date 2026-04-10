@@ -7,7 +7,7 @@ public class Entity : MonoBehaviour
 
     protected float currentHealth;
 
-    // ДОБАВЛЕНО: Публичные свойства для чтения здоровья из UI
+    
     public float CurrentHealth => currentHealth; 
     public float MaxHealth => maxHealth;
 

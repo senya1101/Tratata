@@ -5,10 +5,10 @@ using UnityEngine.InputSystem;
 public class PlayerController : Entity
 {
     [Header("Боевая система")]
-    public float attackRange = 2.5f;     // Дальность удара
-    public float attackDamage = 35f;     // Урон (у курицы по умолчанию 100 ХП)
-    public float attackCooldown = 0.5f;  // Задержка между ударами (полсекунды)
-    public GameObject hitEffectPrefab;   // Ссылка на префаб взрыва искр
+    public float attackRange = 2.5f;     
+    public float attackDamage = 35f;     
+    public float attackCooldown = 0.5f;  
+    public GameObject hitEffectPrefab;   
 
     private float nextAttackTime = 0f;
     [Header("Настройки перемещения")]
@@ -84,20 +84,20 @@ public class PlayerController : Entity
     }
     void PerformAttack()
     {
-        // Создаем невидимую сферу вокруг игрока и собираем всё, что в неё попало
+        
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackRange);
         
         bool hitSomeone = false;
 
         foreach (var hitCollider in hitColliders)
         {
-            // Проверяем, попали ли мы по врагу
+            
             EnemyBot enemy = hitCollider.GetComponent<EnemyBot>();
             if (enemy != null)
             {
                 enemy.TakeDamage(attackDamage);
                 
-                // Спавним крутой спецэффект прямо на враге (чуть выше земли, чтобы было видно)
+                
                 if (hitEffectPrefab != null)
                 {
                     Instantiate(hitEffectPrefab, hitCollider.transform.position + Vector3.up, Quaternion.identity);
@@ -113,11 +113,16 @@ public class PlayerController : Entity
         }
     }
 
-    // Эта штука нарисует красную сферу в редакторе Unity, чтобы ты мог визуально настроить радиус удара
+    
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }
-
+protected override void Die()
+{
+    
+    Debug.Log("Игрок погиб!");
+    GameManager.Instance.EndGame(); 
+}
 }

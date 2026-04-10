@@ -1,19 +1,23 @@
 using UnityEngine;
-using UnityEngine.UI; // Обязательно подключаем библиотеку для работы с UI
+using UnityEngine.UI;
+using TMPro; 
 
 public class HUDManager : MonoBehaviour
 {
     [Header("Ссылки на сущности")]
-    public Entity player;   // Сюда перетащим игрока
-    public Entity crystal;  // Сюда перетащим колодец (кристалл)
+    public Entity player;   
+    public Entity crystal;  
+    public EnemySpawner spawner; 
 
     [Header("Ссылки на UI (Полоски здоровья)")]
     public Slider playerHealthSlider;
     public Slider crystalHealthSlider;
 
+    [Header("Ссылки на UI (Текст)")]
+    public TextMeshProUGUI waveText;
+
     void Start()
     {
-        // Настраиваем максимальные значения ползунков при старте игры
         if (player != null && playerHealthSlider != null)
         {
             playerHealthSlider.maxValue = player.MaxHealth;
@@ -29,11 +33,15 @@ public class HUDManager : MonoBehaviour
 
     void Update()
     {
-        // Постоянно обновляем значения ползунков (чтобы они реагировали на урон)
         if (player != null && playerHealthSlider != null)
             playerHealthSlider.value = player.CurrentHealth;
 
         if (crystal != null && crystalHealthSlider != null)
             crystalHealthSlider.value = crystal.CurrentHealth;
+
+        if (spawner != null && waveText != null)
+        {
+            waveText.text = "ВОЛНА: " + spawner.currentWave;
+        }
     }
 }
