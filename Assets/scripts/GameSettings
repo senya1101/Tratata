@@ -1,0 +1,5 @@
+public static class GameSettings
+{
+    // Глобальная переменная громкости (от 0.0 до 1.0). По умолчанию ставим 0.5.
+    public static float MusicVolume = 0.5f; 
+}

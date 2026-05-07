@@ -129,4 +129,17 @@ public class EnemyBot : Entity
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }
+
+    [Header("Звуки")]
+    public AudioClip hitSound; 
+
+    public override void TakeDamage(float damageAmount)
+    {
+        base.TakeDamage(damageAmount); 
+
+        if (hitSound != null)
+        {
+            AudioSource.PlayClipAtPoint(hitSound, transform.position);
+        }
+    }
 }

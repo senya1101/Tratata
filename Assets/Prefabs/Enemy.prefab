@@ -145,9 +145,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBot
   maxHealth: 100
   targetCrystal: {fileID: 0}
+  targetPlayer: {fileID: 0}
+  aggroRadius: 5
   attackRange: 2.5
   damage: 10
   attackCooldown: 1.5
+  hitSound: {fileID: 8300000, guid: 313786e6d6e0ea44c95504c424568eb2, type: 3}
 --- !u!1 &2137142173744449495
 GameObject:
   m_ObjectHideFlags: 0
@@ -161,6 +164,7 @@ GameObject:
   - component: {fileID: 720303582237536114}
   - component: {fileID: 1024264085454610867}
   - component: {fileID: 3162236811636284944}
+  - component: {fileID: 9019795807695818476}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -263,8 +267,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcbc574ae1b734e46b7f8e26b441a61a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealthBar
-  enemy: {fileID: 2568962623651788785}
   healthSlider: {fileID: 261861973757378396}
+  enemyEntity: {fileID: 0}
+--- !u!114 &9019795807695818476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2137142173744449495}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcbc574ae1b734e46b7f8e26b441a61a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealthBar
+  healthSlider: {fileID: 0}
+  enemyEntity: {fileID: 0}
 --- !u!1 &4928287562199084143
 GameObject:
   m_ObjectHideFlags: 0

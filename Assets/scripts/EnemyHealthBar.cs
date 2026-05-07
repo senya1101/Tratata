@@ -3,42 +3,54 @@ using UnityEngine.UI;
 
 public class EnemyHealthBar : MonoBehaviour
 {
-    [Header("Ссылки")]
-    public Entity enemy;           
-    public Slider healthSlider;    
+    [Header("UI Элементы")]
+    public Slider healthSlider;
+    
+    [Header("Кого отслеживаем?")]
+    public Entity enemyEntity;
 
-    private Transform cameraTransform;
+    private Transform cam;
+    private Canvas myCanvas; 
 
     void Start()
     {
         
         if (Camera.main != null)
         {
-            cameraTransform = Camera.main.transform;
+            cam = Camera.main.transform;
         }
 
         
-        if (enemy != null && healthSlider != null)
+        myCanvas = GetComponent<Canvas>();
+        if (myCanvas != null && Camera.main != null)
         {
-            healthSlider.maxValue = enemy.MaxHealth;
-            healthSlider.value = enemy.CurrentHealth;
+            myCanvas.worldCamera = Camera.main; 
+        }
+        
+        
+        if (enemyEntity == null)
+        {
+            enemyEntity = GetComponentInParent<Entity>();
+        }
+            
+        
+        if (enemyEntity != null && healthSlider != null)
+        {
+            healthSlider.maxValue = enemyEntity.MaxHealth;
+            healthSlider.value = enemyEntity.CurrentHealth;
         }
     }
 
-    
-    void LateUpdate() 
+    void LateUpdate()
     {
-        
-        if (enemy != null && healthSlider != null)
+        if (enemyEntity != null && healthSlider != null)
         {
-            healthSlider.value = enemy.CurrentHealth;
+            healthSlider.value = enemyEntity.CurrentHealth;
         }
 
-        
-        if (cameraTransform != null)
+        if (cam != null)
         {
-            transform.LookAt(transform.position + cameraTransform.rotation * Vector3.forward,
-                             cameraTransform.rotation * Vector3.up);
+            transform.LookAt(transform.position + cam.forward);
         }
     }
 }
