@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(AudioSource))] // Гарантирует, что на курочке точно будет AudioSource
 public class EnemyBot : Entity
 {
     [Header("Настройки ИИ (Курочки)")]
@@ -19,21 +20,31 @@ public class EnemyBot : Entity
 
     private Transform currentTarget; 
 
+    [Header("Визуальные эффекты")]
+    public GameObject hitParticlesPrefab; // Префаб системы частиц при попадании
+
+    [Header("Звуки")]
+    public AudioClip hitSound; // Звук получения урона
+    private AudioSource audioSource; // Ссылка на наш источник звука
+
     protected override void Start()
     {
         base.Start(); 
 
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
-
         
+        // Находим AudioSource на самой курочке
+        audioSource = GetComponent<AudioSource>();
+
+        // Если кристалл не назначен в инспекторе, ищем его по тегу
         if (targetCrystal == null)
         {
             GameObject crystalObj = GameObject.FindGameObjectWithTag("Crystal");
             if (crystalObj != null) targetCrystal = crystalObj.transform;
         }
 
-        
+        // Если игрок не назначен, ищем его по скрипту PlayerController
         if (targetPlayer == null)
         {
             PlayerController player = FindFirstObjectByType<PlayerController>();
@@ -43,22 +54,20 @@ public class EnemyBot : Entity
 
     private void Update()
     {
+        // Передача скорости в аниматор для переключения между Idle и Walk
         if (animator != null)
         {
             animator.SetFloat("Speed", agent.velocity.magnitude);
         }
 
-        
         if (targetCrystal == null && targetPlayer == null)
         {
             agent.isStopped = true;
             return;
         }
 
-        
         DetermineTarget();
 
-        
         if (currentTarget != null && currentTarget.gameObject.activeInHierarchy)
         {
             agent.isStopped = false;
@@ -79,10 +88,10 @@ public class EnemyBot : Entity
 
     private void DetermineTarget()
     {
-        
+        // По умолчанию цель - кристалл
         currentTarget = targetCrystal;
 
-        
+        // Если игрок рядом, переключаем агрессию на него
         if (targetPlayer != null && targetPlayer.gameObject.activeInHierarchy)
         {
             float distanceToPlayer = Vector3.Distance(transform.position, targetPlayer.position);
@@ -103,6 +112,7 @@ public class EnemyBot : Entity
                 animator.SetTrigger("Attack"); 
             }
 
+            // Наносим урон цели
             Entity targetEntity = target.GetComponent<Entity>();
             if (targetEntity != null)
             {
@@ -130,16 +140,22 @@ public class EnemyBot : Entity
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 
-    [Header("Звуки")]
-    public AudioClip hitSound; 
-
+    // Этот метод вызывается, когда курочка получает урон
     public override void TakeDamage(float damageAmount)
     {
-        base.TakeDamage(damageAmount); 
+        base.TakeDamage(damageAmount); // Вычитает здоровье из скрипта Entity
 
-        if (hitSound != null)
+        // 1. Воспроизведение звука с помощью PlayOneShot (чистый звук без обрываний)
+        if (hitSound != null && audioSource != null)
         {
-            AudioSource.PlayClipAtPoint(hitSound, transform.position);
+            audioSource.PlayOneShot(hitSound);
+        }
+
+        // 2. Создание системы частиц (визуального эффекта)
+        if (hitParticlesPrefab != null)
+        {
+            GameObject particles = Instantiate(hitParticlesPrefab, transform.position, Quaternion.identity);
+            Destroy(particles, 2f); // Уничтожаем частицы через 2 секунды
         }
     }
 }

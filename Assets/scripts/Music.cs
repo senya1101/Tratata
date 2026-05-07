@@ -18,7 +18,6 @@ public class SceneMusic : MonoBehaviour
         }
     }
 
-    // Этот метод нужен, чтобы менять громкость ползунком прямо во время игры
     public void UpdateVolume()
     {
         if (audioSource != null)
