@@ -151,7 +151,7 @@ MonoBehaviour:
   attackRange: 2.5
   damage: 10
   attackCooldown: 1.5
-  hitParticlesPrefab: {fileID: 0}
+  hitParticlesPrefab: {fileID: 7446931481454916222, guid: 1db862acf1f4ace46a08f70cde3bb6f1, type: 3}
   hitSound: {fileID: 8300000, guid: 313786e6d6e0ea44c95504c424568eb2, type: 3}
 --- !u!82 &8195422106654553885
 AudioSource:
